@@ -1,0 +1,71 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="wheel_right" params="prefix x y z">
+        <link name="${prefix}_link">
+            <inertial>
+                <mass value="0.038"/>
+                <inertia ixx="0.00001283" ixy="0.0" ixz="0.0" iyy="0.00001283" iyz="0.0" izz="0.00002069"/>
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+                <geometry>
+                    <mesh filename="package://models_pkg/wheel_right/meshes/rim.dae"/>
+                </geometry>
+                <!-- <material name="wheel_right">
+                    <lighting>1</lighting>
+                    <shader type='vertex'>
+                        <normal_map>__default__</normal_map>
+                    </shader>
+                    <ambient>0.2 0.2 0.2 1</ambient>
+                    <diffuse>0.3 0.3 0.3 1</diffuse>
+                    <specular>0.5 0.5 0.5 1</specular>
+                    <emissive>0.0 0.0 0.0 0.0</emissive>
+                </material> -->
+            </visual>
+
+            <collision>
+                <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+                <geometry>
+                    <cylinder radius="0.33000" length="0.28000" />
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                        <mu>0.7</mu>
+                        <mu2>0.7</mu2>
+                        <fdir1>0 0 0</fdir1>
+                        <slip1>0</slip1>
+                        <slip2>0</slip2>
+                        </ode>
+                        <torsional>
+                        <coefficient>1</coefficient>
+                        <patch_radius>0</patch_radius>
+                        <surface_radius>0</surface_radius>
+                        <use_patch_radius>1</use_patch_radius>
+                        <ode>
+                            <slip>0</slip>
+                        </ode>
+                        </torsional>
+                    </friction>
+                    <bounce>
+                        <restitution_coefficient>0</restitution_coefficient>
+                        <threshold>1e+06</threshold>
+                    </bounce>
+                </surface>
+            </collision>
+        </link>
+
+        <!-- Connect the wheels to the base_link at the appropriate location, and 
+            define a continuous joint to allow the wheels to freely rotate about
+            an axis -->
+        <joint name="${prefix}_joint" type="revolute">
+            <parent link="base_link" />
+            <child link="${prefix}_link" />
+            <!-- change sign of yaw if fornt and rear are not right -->
+            <origin xyz="0 0 0" rpy="0 -0 -1.5708" />
+
+            <axis xyz="0 0 -1"/>
+            <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />
+            <dynamics damping="0" friction="0" />
+        </joint>
+    </xacro:macro>
+</robot>

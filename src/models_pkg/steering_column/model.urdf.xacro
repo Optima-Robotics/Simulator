@@ -1,0 +1,60 @@
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="steering_column" params="prefix x y z z_joint">
+        <link name="${prefix}_link">
+            <inertial>
+                <mass value="0.001"/>
+                <inertia ixx="0.00014583" ixy="0.0" ixz="0.0" iyy="0.00014583" iyz="0.0" izz="0.000125"/>
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+                <geometry>
+                    <cylinder radius="0.001" length="0.01" />
+                </geometry>
+            </visual>
+
+            <collision>
+                <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+                <geometry>
+                    <cylinder radius="0.001" length="0.01" />
+                </geometry>
+                <surface>
+                    <friction>
+                        <ode>
+                        <mu>1</mu>
+                        <mu2>1</mu2>
+                        <fdir1>0 0 0</fdir1>
+                        <slip1>0</slip1>
+                        <slip2>0</slip2>
+                        </ode>
+                        <torsional>
+                        <coefficient>1</coefficient>
+                        <patch_radius>0</patch_radius>
+                        <surface_radius>0</surface_radius>
+                        <use_patch_radius>1</use_patch_radius>
+                        <ode>
+                            <slip>0</slip>
+                        </ode>
+                        </torsional>
+                    </friction>
+                    <bounce>
+                        <restitution_coefficient>0</restitution_coefficient>
+                        <threshold>1e+06</threshold>
+                    </bounce>
+                </surface>
+            </collision>
+        </link>
+
+        <!-- Connect the wheels to the base_link at the appropriate location, and 
+            define a continuous joint to allow the wheels to freely rotate about
+            an axis -->
+        <joint name="${prefix}_joint" type="revolute">
+            <parent link="base_link" />
+            <child link="${prefix}_link" />
+            <origin xyz="0 0 ${z_joint}" rpy="0 -0 -1.5708" />
+
+            <axis xyz="0 1 0"/>
+            <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />
+            <dynamics damping="0" friction="0" />
+        </joint>
+    </xacro:macro>
+</robot>

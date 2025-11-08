@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<robot name="automobile" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find models_pkg)/wheel_left/model.urdf.xacro"/>
+  <xacro:include filename="$(find models_pkg)/wheel_right/model.urdf.xacro"/>
+  <xacro:include filename="$(find models_pkg)/steering_column/model.urdf.xacro"/>
+
+  <link name="base_footprint" />
+
+  <joint
+    name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint" />
+    <child link="base_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 1.5708" />
+  </joint>
+
+  <!-- Chassis link -->
+  <link name='base_link'>
+      <inertial>
+        <mass value="0.26244"/>
+        <inertia ixx="0.00283444" ixy="0.0" ixz="0.0" iyy="0.00039867" iyz="0.0" izz="0.00323293"/>
+      </inertial>
+      <visual>
+        <origin rpy="0 0 -1.57079" xyz="0 0 -0.0065"/>
+        <geometry>
+          <mesh filename="package://models_pkg/chassis/meshes/chassisV5.dae"/>
+        </geometry>
+        <material name="chassis">
+          <color rgba="1.0 0.0 0.0 1.0" />
+        </material>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <box size="0.135 0.36 0.002"/>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <coefficient>1</coefficient>
+              <patch_radius>0</patch_radius>
+              <surface_radius>0</surface_radius>
+              <use_patch_radius>1</use_patch_radius>
+              <ode>
+                <slip>0</slip>
+              </ode>
+            </torsional>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0</restitution_coefficient>
+            <threshold>1e+06</threshold>
+          </bounce>
+        </surface>
+      </collision>
+    </link>   
+
+
+  <!-- Left Wheel links -->
+  <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="0" />
+  <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="0" />
+  <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="0" z_joint="0.005" />
+
+
+  <!-- Right Wheel links -->
+  <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="0" />
+  <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="0" />
+  <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="0" z_joint="-0.005" />
+
+
+  <!-- Car body link -->
+
+  <link name='car_body_link'>
+    <inertial>
+        <mass value="1"/>
+        <inertia ixx="0.166667" ixy="0.0" ixz="0.0" iyy="0.166667" iyz="0.0" izz="0.166667"/>
+    </inertial>
+    <visual name='visual'>
+      <origin rpy="0 0 -1.57079" xyz="0 0.024 -0.028"/>
+      <geometry>
+        <mesh filename="package://models_pkg/car_body/meshes/CarBody.dae"/>
+      </geometry>
+    </visual>
+  </link>
+
+  <joint name='car_body_joint' type='fixed'>
+    <parent link="base_link" />
+    <child link="car_body_link" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+  </joint>
+
+<!-- 
+
+  <include>
+    <uri>model://camera</uri>
+    <origin rpy="0 0.2617 0" xyz="0 0 0.2"/>
+    <name>camera</name>
+  </include>
+
+  <joint name="joint_camera" type="fixed">
+    <parent link="chassis::link"/>
+    <child link="camera::link_camera"/>
+    <origin rpy="0 -0 0" xyz="0 0 0"/>
+  </joint> -->
+</robot>
