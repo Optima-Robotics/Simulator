@@ -1,7 +1,7 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
   <model name='steering_column'>
-    <link name='link_steer'>
+    <link name='steer'>
       <inertial>
         <mass>0.001</mass>
         <inertia>

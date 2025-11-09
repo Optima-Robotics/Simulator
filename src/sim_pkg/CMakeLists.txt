@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 project(sim_pkg)
 find_package(ament_cmake REQUIRED)
-install(DIRECTORY launch worlds DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch worlds rviz DESTINATION share/${PROJECT_NAME})
 ament_package()

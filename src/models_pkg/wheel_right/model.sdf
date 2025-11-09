@@ -1,7 +1,6 @@
 <?xml version='1.0'?>
 <sdf version='1.6'>
   <model name='wheel_right'>
-
     <link name='link_rim'>
       <inertial>
         <mass>0.038</mass>

@@ -8,14 +8,38 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.descriptions import ParameterValue
 from ament_index_python.packages import get_package_share_directory
+from scripts import GazeboRosPaths 
+from pathlib import Path
 
- 
+def clean_path(raw, default=0):
+  cleaned_paths = []
+  for p in raw.split(':'):
+    if not p.strip():
+        continue  # skip empty entries
+    if p.startswith('/opt/ros/humble') and not default:
+        continue  # skip system ROS paths
+
+    path_obj = Path(p)
+    # If the path ends with '/..', go up one and reattach the last folder name
+    if path_obj.name == '..':
+        pkg_name = path_obj.parent.name  # e.g., sim_pkg
+        resolved = path_obj.parent.parent / pkg_name
+    else:
+        resolved = path_obj.resolve()
+
+    cleaned_paths.append(str(resolved))
+
+  cleaned = ':'.join(cleaned_paths)
+  return cleaned
+
+
+
  
 def generate_launch_description():
  
   # Constants for paths to different files and folders
   gazebo_models_package = 'models_pkg'
-  plugins_package = 'plugins_pkg'
+  gazebo_plugins_package = 'plugins_pkg'
   world_package = 'sim_pkg'
 
   robot_name_in_model = 'automobile'
@@ -36,17 +60,27 @@ def generate_launch_description():
   pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   
   pkg_share = FindPackageShare(package=world_package).find(world_package)
   pkg_model = FindPackageShare(package=gazebo_models_package).find(gazebo_models_package)
+  # pkg_plugin = FindPackageShare(package=gazebo_plugins_package).find(gazebo_plugins_package)
 
-  default_urdf_model_path = os.path.join(get_package_share_directory(gazebo_models_package), urdf_file_path)
+  default_urdf_model_path = os.path.join(pkg_model, urdf_file_path)
   default_sdf_model_path = os.path.join(pkg_model, sdf_file_path)
 
   default_rviz_config_path = os.path.join(pkg_share, rviz_config_file_path)
 
   world_path = os.path.join(pkg_share, world_file_path)
   gazebo_models_path = os.path.join(pkg_model, gazebo_models_package)
+  # gazebo_plugins_path = os.path.join(pkg_plugin, gazebo_plugins_package)
 
-  # os.environ["GAZEBO_MODEL_PATH"] = gazebo_models_path
-   
+
+  model_path, plugin_path, media_path = GazeboRosPaths.get_paths()
+  # plugin_path = plugin_path + ":/opt/ros/humble/lib"
+  # print(clean_path(plugin_path, default=1))
+  os.environ["GAZEBO_MODEL_PATH"] = clean_path(model_path) 
+  # os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
+  # os.environ["GAZEBO_RESOURCE_PATH"] = media_path
+
+  os.environ['GAZEBO_AUDIO_DEVICE'] = 'none'
+
   # Launch configuration variables specific to simulation
   gui = LaunchConfiguration('gui')
   headless = LaunchConfiguration('headless')
@@ -142,15 +176,19 @@ def generate_launch_description():
   start_gazebo_server_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')),
     condition=IfCondition(use_simulator),
-    launch_arguments={'world': world,
-                      'extra_gazebo_args':"--server-plugin libgazebo_ros_init.so --server-plugin libgazebo_ros_factory.so"}
-                      .items(), )
+    launch_arguments={
+                        'world': world,
+                        'verbose': 'true',
+                        'extra_gazebo_args': ['--server-plugin', 'libgazebo_ros_init.so', '--server-plugin', 'libgazebo_ros_factory.so']
+                    }.items())
+
                       
  
   # Start Gazebo client    
   start_gazebo_client_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),
-    condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])))
+    condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])),
+    launch_arguments={'verbose': 'true'}.items(),)
  
   # Launch the robot which will publlish joint states
   spawn_entity_cmd = Node(
@@ -193,12 +231,14 @@ def generate_launch_description():
   ld.add_action(declare_world_cmd)
  
   # Add any actions
-  ld.add_action(start_gazebo_server_cmd)
-  # ld.add_action(start_gazebo_client_cmd)
-  ld.add_action(spawn_entity_cmd)
-  # ld.add_action(spawn_entity_sdf_cmd)
   ld.add_action(start_robot_state_publisher_cmd)
   ld.add_action(start_joint_state_publisher_cmd)
-  # ld.add_action(start_rviz_cmd)
+
+
+  ld.add_action(start_gazebo_server_cmd)
+  ld.add_action(start_gazebo_client_cmd)
+  ld.add_action(spawn_entity_cmd)
+  # ld.add_action(spawn_entity_sdf_cmd)
+  ld.add_action(start_rviz_cmd)
  
   return ld

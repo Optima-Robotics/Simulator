@@ -5,18 +5,28 @@
   <xacro:include filename="$(find models_pkg)/wheel_right/model.urdf.xacro"/>
   <xacro:include filename="$(find models_pkg)/steering_column/model.urdf.xacro"/>
 
-  <link name="base_footprint" />
+  <!-- Default link -->
+  <link name="base_footprint">
+  </link>
 
   <joint
     name="base_footprint_joint" type="fixed">
-    <parent link="base_footprint" />
-    <child link="base_link" />
+    <parent link="base_link" />
+    <child link="base_footprint" />
     <origin xyz="0.0 0.0 0.0" rpy="0 0 1.5708" />
   </joint>
 
+
+  <gazebo reference="base_footprint_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping> 
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+
   <!-- Chassis link -->
+
   <link name='base_link'>
       <inertial>
+        <origin rpy="0 0 -1.57079" xyz="0 0 -0.0065"/>
         <mass value="0.26244"/>
         <inertia ixx="0.00283444" ixy="0.0" ixz="0.0" iyy="0.00039867" iyz="0.0" izz="0.00323293"/>
       </inertial>
@@ -34,50 +44,29 @@
         <geometry>
           <box size="0.135 0.36 0.002"/>
         </geometry>
-        <surface>
-          <friction>
-            <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
-              <fdir1>0 0 0</fdir1>
-              <slip1>0</slip1>
-              <slip2>0</slip2>
-            </ode>
-            <torsional>
-              <coefficient>1</coefficient>
-              <patch_radius>0</patch_radius>
-              <surface_radius>0</surface_radius>
-              <use_patch_radius>1</use_patch_radius>
-              <ode>
-                <slip>0</slip>
-              </ode>
-            </torsional>
-          </friction>
-          <bounce>
-            <restitution_coefficient>0</restitution_coefficient>
-            <threshold>1e+06</threshold>
-          </bounce>
-        </surface>
       </collision>
     </link>   
 
 
-  <!-- Left Wheel links -->
+  <!-- Left Wheel links and joints -->
+
   <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="0" />
   <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="0" />
   <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="0" z_joint="0.005" />
 
 
-  <!-- Right Wheel links -->
+  <!-- Right Wheel links and joints-->
+
   <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="0" />
   <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="0" />
   <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="0" z_joint="-0.005" />
 
 
-  <!-- Car body link -->
+  <!-- Car body link and joint -->
 
   <link name='car_body_link'>
     <inertial>
+        <origin rpy="0 0 -1.57079" xyz="0 0.024 -0.028"/>
         <mass value="1"/>
         <inertia ixx="0.166667" ixy="0.0" ixz="0.0" iyy="0.166667" iyz="0.0" izz="0.166667"/>
     </inertial>
@@ -87,25 +76,159 @@
         <mesh filename="package://models_pkg/car_body/meshes/CarBody.dae"/>
       </geometry>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.2 0.4 0.1"/> <!-- approximate bounding box -->
+      </geometry>
+    </collision>
+
   </link>
 
   <joint name='car_body_joint' type='fixed'>
     <parent link="base_link" />
     <child link="car_body_link" />
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <dynamics damping="0" friction="0" />
   </joint>
 
-<!-- 
+  <gazebo reference="car_body_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping> 
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
 
-  <include>
-    <uri>model://camera</uri>
-    <origin rpy="0 0.2617 0" xyz="0 0 0.2"/>
-    <name>camera</name>
-  </include>
+  <!-- Camera link and joint -->
 
-  <joint name="joint_camera" type="fixed">
-    <parent link="chassis::link"/>
-    <child link="camera::link_camera"/>
-    <origin rpy="0 -0 0" xyz="0 0 0"/>
-  </joint> -->
+  <link name="camera_link">
+    <inertial>
+        <origin xyz="0 0 0.2" rpy="0 0.2617 0" />
+        <mass value="0.0052875"/>
+        <inertia ixx="4.1e-07" ixy="0.0" ixz="0.0" iyy="7.9e-07" iyz="0.0" izz="4.1e-07"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.2" rpy="0 0.2617 0" />
+      <geometry>
+        <box size="0.005 0.03 0.03" />
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0.2" rpy="0 0.2617 0" />
+        <geometry>
+          <box size="0.005 0.03 0.03"/>
+        </geometry>
+    </collision>
+    
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="camera_link" />
+    <origin xyz="0 0 0" rpy="0 0 -1.5708" />
+    <dynamics damping="0" friction="0" />
+
+  </joint>
+
+  <gazebo reference="camera_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping> 
+    <preserveFixedJoint>true</preserveFixedJoint>
+  </gazebo>
+
+  <!-- Gazebo plugins -->
+
+  <!-- Camera Plugin -->
+
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="camera1">
+      <pose>0 0 0.2 0 0.2617 0</pose>
+      <always_on>true</always_on>
+      <update_rate>30.0</update_rate>
+      <visualize>true</visualize>
+      <camera>
+        <horizontal_fov>1.085594795</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>100</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.0</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <baseline>0.2</baseline>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>30.0</updateRate>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.0</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+        <robotNamespace>/</robotNamespace>
+      </plugin>
+    </sensor>
+
+    
+  </gazebo>
+
+  <!-- Car-like robot Plugin -->
+
+  <gazebo>
+    <plugin name="CarLikeRobotPlugin" filename="libcar_plugin.so">
+      <wheelbase>0.26</wheelbase>
+      <axletrack>0.162</axletrack>
+      <wheelradius>0.0325</wheelradius>
+
+      <speed_wheel_joints>
+        <front_wheel_joints>
+          <leftjoint>wheel_front_left_joint</leftjoint>
+          <rightjoint>wheel_front_right_joint</rightjoint>
+        </front_wheel_joints>
+        <rear_wheel_joints>
+          <leftjoint>wheel_rear_left_joint</leftjoint>
+          <rightjoint>wheel_rear_right_joint</rightjoint>
+        </rear_wheel_joints>
+        <kp>0.01</kp>
+        <ki>0.0</ki>
+        <kd>0.0</kd>
+      </speed_wheel_joints>
+
+      <steer_wheel_joints>
+        <leftjoint>steer_left_joint</leftjoint>
+        <rightjoint>steer_right_joint</rightjoint>
+        <kp>10</kp>
+        <ki>0.0</ki>
+        <kd>0.1</kd>
+      </steer_wheel_joints>
+
+      <initial_steer>0.0</initial_steer>
+      <initial_speed>0.0</initial_speed>
+      <robotNamespace>/</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <!-- BNO055 IMU Plugin  -->
+
+  <gazebo>
+    <plugin name="bno055" filename="libbno055_plugin.so"/>
+  </gazebo>
+
+  <!-- GPS Plugin -->
+
+  <gazebo>
+    <plugin name="gps" filename="libgps_plugin.so"/>
+  </gazebo>
+
 </robot>
