@@ -6,14 +6,14 @@
                 <inertia ixx="0.00014583" ixy="0.0" ixz="0.0" iyy="0.00014583" iyz="0.0" izz="0.000125"/>
             </inertial>
             <visual>
-                <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+                <origin rpy="0 0 1.5708" xyz="${x} ${y} ${z}"/>
                 <geometry>
                     <cylinder radius="0.001" length="0.01" />
                 </geometry>
             </visual>
 
             <collision>
-                <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+                <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
                     <cylinder radius="0.001" length="0.01" />
                 </geometry>
@@ -40,7 +40,28 @@
                         <restitution_coefficient>0</restitution_coefficient>
                         <threshold>1e+06</threshold>
                     </bounce>
-                </surface>
+                    <contact>
+                        <collide_without_contact>0</collide_without_contact>
+                        <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+                        <collide_bitmask>1</collide_bitmask>
+                        <ode>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <kp>1e+13</kp>
+                        <kd>1</kd>
+                        <max_vel>0.01</max_vel>
+                        <min_depth>0</min_depth>
+                        </ode>
+                        <bullet>
+                        <split_impulse>1</split_impulse>
+                        <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <kp>1e+13</kp>
+                        <kd>1</kd>
+                        </bullet>
+                    </contact>
+                    </surface>
             </collision>
         </link>
 
@@ -50,7 +71,7 @@
         <joint name="${prefix}_joint" type="revolute">
             <parent link="base_link" />
             <child link="${prefix}_link" />
-            <origin xyz="0 0 ${z_joint}" rpy="0 -0 -1.5708" />
+            <origin xyz="0 0 ${z_joint}" rpy="0 -0 0" />
 
             <axis xyz="0 1 0"/>
             <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />

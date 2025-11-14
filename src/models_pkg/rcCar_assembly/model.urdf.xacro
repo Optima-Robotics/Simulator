@@ -13,7 +13,7 @@
     name="base_footprint_joint" type="fixed">
     <parent link="base_link" />
     <child link="base_footprint" />
-    <origin xyz="0.0 0.0 0.0" rpy="0 0 1.5708" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
   </joint>
 
 
@@ -26,12 +26,11 @@
 
   <link name='base_link'>
       <inertial>
-        <origin rpy="0 0 -1.57079" xyz="0 0 -0.0065"/>
         <mass value="0.26244"/>
-        <inertia ixx="0.00283444" ixy="0.0" ixz="0.0" iyy="0.00039867" iyz="0.0" izz="0.00323293"/>
+        <inertia ixx="0.002" ixy="0.0" ixz="0.0" iyy="0.002" iyz="0.0" izz="0.002"/>      
       </inertial>
       <visual>
-        <origin rpy="0 0 -1.57079" xyz="0 0 -0.0065"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
         <geometry>
           <mesh filename="package://models_pkg/chassis/meshes/chassisV5.dae"/>
         </geometry>
@@ -44,34 +43,79 @@
         <geometry>
           <box size="0.135 0.36 0.002"/>
         </geometry>
+
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+              <fdir1>0 0 0</fdir1>
+              <slip1>0</slip1>
+              <slip2>0</slip2>
+            </ode>
+            <torsional>
+              <coefficient>1</coefficient>
+              <patch_radius>0</patch_radius>
+              <surface_radius>0</surface_radius>
+              <use_patch_radius>1</use_patch_radius>
+              <ode>
+                <slip>0</slip>
+              </ode>
+            </torsional>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0</restitution_coefficient>
+            <threshold>1e+06</threshold>
+          </bounce>
+          <contact>
+            <collide_without_contact>0</collide_without_contact>
+            <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+            <collide_bitmask>1</collide_bitmask>
+            <ode>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+6</kp>
+              <kd>1</kd>
+              <max_vel>0.01</max_vel>
+              <min_depth>0</min_depth>
+            </ode>
+            <!-- <bullet>
+              <split_impulse>1</split_impulse>
+              <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+              <soft_cfm>0</soft_cfm>
+              <soft_erp>0.2</soft_erp>
+              <kp>1e+13</kp>
+              <kd>1</kd>
+            </bullet> -->
+          </contact>
+        </surface>
       </collision>
     </link>   
 
 
   <!-- Left Wheel links and joints -->
 
-  <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="0" />
-  <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="0" />
-  <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="0" z_joint="0.005" />
+  <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="-0.033" />
+  <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="-0.033" />
+  <!-- <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="0" z_joint="0.005" /> -->
 
 
   <!-- Right Wheel links and joints-->
 
-  <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="0" />
-  <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="0" />
-  <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="0" z_joint="-0.005" />
+  <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="-0.033" />
+  <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="-0.033" />
+  <!-- <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="0" z_joint="0.005" /> -->
 
 
   <!-- Car body link and joint -->
 
   <link name='car_body_link'>
     <inertial>
-        <origin rpy="0 0 -1.57079" xyz="0 0.024 -0.028"/>
         <mass value="1"/>
         <inertia ixx="0.166667" ixy="0.0" ixz="0.0" iyy="0.166667" iyz="0.0" izz="0.166667"/>
     </inertial>
     <visual name='visual'>
-      <origin rpy="0 0 -1.57079" xyz="0 0.024 -0.028"/>
+      <origin rpy="0 0 0" xyz="-0.024 0 -0.028"/>
       <geometry>
         <mesh filename="package://models_pkg/car_body/meshes/CarBody.dae"/>
       </geometry>
@@ -101,7 +145,6 @@
 
   <link name="camera_link">
     <inertial>
-        <origin xyz="0 0 0.2" rpy="0 0.2617 0" />
         <mass value="0.0052875"/>
         <inertia ixx="4.1e-07" ixy="0.0" ixz="0.0" iyy="7.9e-07" iyz="0.0" izz="4.1e-07"/>
     </inertial>
@@ -126,7 +169,7 @@
   <joint name="camera_joint" type="fixed">
     <parent link="base_link" />
     <child link="camera_link" />
-    <origin xyz="0 0 0" rpy="0 0 -1.5708" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
     <dynamics damping="0" friction="0" />
 
   </joint>
@@ -185,7 +228,7 @@
 
   <!-- Car-like robot Plugin -->
 
-  <gazebo>
+  <!-- <gazebo>
     <plugin name="CarLikeRobotPlugin" filename="libcar_plugin.so">
       <wheelbase>0.26</wheelbase>
       <axletrack>0.162</axletrack>
@@ -217,18 +260,18 @@
       <initial_speed>0.0</initial_speed>
       <robotNamespace>/</robotNamespace>
     </plugin>
-  </gazebo>
+  </gazebo> -->
 
   <!-- BNO055 IMU Plugin  -->
 
-  <gazebo>
+  <!-- <gazebo>
     <plugin name="bno055" filename="libbno055_plugin.so"/>
-  </gazebo>
+  </gazebo> -->
 
   <!-- GPS Plugin -->
 
-  <gazebo>
+  <!-- <gazebo>
     <plugin name="gps" filename="libgps_plugin.so"/>
-  </gazebo>
+  </gazebo> -->
 
 </robot>

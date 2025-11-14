@@ -3,30 +3,32 @@
         <link name="${prefix}_link">
             <inertial>
                 <mass value="0.038"/>
-                <inertia ixx="0.00001283" ixy="0.0" ixz="0.0" iyy="0.00001283" iyz="0.0" izz="0.00002069"/>
+                <inertia ixx="0.00003" ixy="0.0" ixz="0.0" iyy="0.00003" iyz="0.0"  izz="0.00003"/>            
             </inertial>
+
             <visual>
-                <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
                 <geometry>
                     <mesh filename="package://models_pkg/wheel_left/meshes/rim.dae"/>
                 </geometry>
             </visual>
 
             <collision>
-                <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+                <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <cylinder radius="0.33000" length="0.28000" />
+                    <cylinder radius="0.033" length="0.028" />
                 </geometry>
+
                 <surface>
                     <friction>
                         <ode>
-                        <mu>0.7</mu>
-                        <mu2>0.7</mu2>
-                        <fdir1>0 0 0</fdir1>
-                        <slip1>0</slip1>
-                        <slip2>0</slip2>
+                            <mu>0.7</mu>
+                            <mu2>0.7</mu2>
+                            <fdir1>0 0 0</fdir1>
+                            <slip1>0</slip1>
+                            <slip2>0</slip2>
                         </ode>
-                        <torsional>
+                        <!-- <torsional>
                         <coefficient>1</coefficient>
                         <patch_radius>0</patch_radius>
                         <surface_radius>0</surface_radius>
@@ -34,12 +36,33 @@
                         <ode>
                             <slip>0</slip>
                         </ode>
-                        </torsional>
+                        </torsional> -->
                     </friction>
                     <bounce>
                         <restitution_coefficient>0</restitution_coefficient>
                         <threshold>1e+06</threshold>
                     </bounce>
+                    <contact>
+                        <collide_without_contact>0</collide_without_contact>
+                        <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
+                        <collide_bitmask>1</collide_bitmask>
+                        <ode>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <kp>1e+07</kp>
+                        <kd>1</kd>
+                        <max_vel>0.01</max_vel>
+                        <min_depth>0</min_depth>
+                        </ode>
+                        <!-- <bullet>
+                        <split_impulse>1</split_impulse>
+                        <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <kp>1e+07</kp>
+                        <kd>1</kd>
+                        </bullet> -->
+                    </contact>
                 </surface>
             </collision>
         </link>
@@ -47,12 +70,12 @@
         <!-- Connect the wheels to the base_link at the appropriate location, and 
             define a continuous joint to allow the wheels to freely rotate about
             an axis -->
-        <joint name="${prefix}_joint" type="revolute">
+        <joint name="${prefix}_joint" type="continuous">
             <parent link="base_link" />
             <child link="${prefix}_link" />
-            <origin xyz="0 0 0" rpy="0 -0 -1.5708" />
+            <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
 
-            <axis xyz="0 0 -1"/>
+            <axis xyz="0 1 0"/>
             <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />
             <dynamics damping="0" friction="0" />
         </joint>
