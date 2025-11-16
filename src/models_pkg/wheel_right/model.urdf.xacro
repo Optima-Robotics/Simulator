@@ -1,5 +1,5 @@
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <xacro:macro name="wheel_right" params="prefix x y z">
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:macro name="wheel_right" params="prefix x y z parent">
         <link name="${prefix}_link">
             <inertial>
                 <mass value="0.038"/>
@@ -13,7 +13,7 @@
             </visual>
 
             <collision>
-                <origin xyz="0 0 0" rpy="0 0 0" />
+                <origin xyz="0 0 0" rpy="1.5709 0 0" />
                 <geometry>
                     <cylinder radius="0.033" length="0.028" />
                 </geometry>
@@ -69,7 +69,7 @@
             define a continuous joint to allow the wheels to freely rotate about
             an axis -->
         <joint name="${prefix}_joint" type="continuous">
-            <parent link="base_link" />
+            <parent link="${parent}" />
             <child link="${prefix}_link" />
             <!-- change sign of yaw if fornt and rear are not right -->
             <origin xyz="${x} ${y} ${z}" rpy="0 -0 0" />

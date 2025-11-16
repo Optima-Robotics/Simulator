@@ -39,7 +39,7 @@
         </material>
       </visual>
       <collision>
-        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <origin rpy="0 0 0" xyz="0 0 1.5709"/>
         <geometry>
           <box size="0.135 0.36 0.002"/>
         </geometry>
@@ -95,16 +95,16 @@
 
   <!-- Left Wheel links and joints -->
 
-  <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="-0.033" />
-  <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="-0.033" />
-  <!-- <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="0" z_joint="0.005" /> -->
+  <xacro:steering_column prefix="steer_left" x="0.112" y="0.0725" z="-0.0165" z_joint="0.005" />
+  <xacro:wheel_left prefix="wheel_rear_left" x="-0.152" y="0.081" z="-0.0165" parent="base_link" />
+  <xacro:wheel_left prefix="wheel_front_left" x="0.118" y="0.081" z="-0.0165" parent="steer_left_link" />
 
 
   <!-- Right Wheel links and joints-->
 
-  <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="-0.033" />
-  <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="-0.033" />
-  <!-- <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="0" z_joint="0.005" /> -->
+  <xacro:steering_column prefix="steer_right" x="0.112" y="-0.0725" z="-0.0165" z_joint="0.005" />
+  <xacro:wheel_right prefix="wheel_rear_right" x="-0.152" y="-0.081" z="-0.0165" parent="base_link" />
+  <xacro:wheel_right prefix="wheel_front_right" x="0.118" y="-0.081" z="-0.0165" parent="steer_right_link" />
 
 
   <!-- Car body link and joint -->
@@ -120,11 +120,11 @@
         <mesh filename="package://models_pkg/car_body/meshes/CarBody.dae"/>
       </geometry>
     </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+    <collision >
+      <origin xyz="-0.024 0 0.07" rpy="0 0 1.5709"/>
       <geometry>
-        <box size="0.2 0.4 0.1"/> <!-- approximate bounding box -->
-      </geometry>
+        <box size="0.2 0.5 0.1"/> 
+      </geometry> 
     </collision>
 
   </link>
@@ -228,7 +228,7 @@
 
   <!-- Car-like robot Plugin -->
 
-  <!-- <gazebo>
+  <gazebo>
     <plugin name="CarLikeRobotPlugin" filename="libcar_plugin.so">
       <wheelbase>0.26</wheelbase>
       <axletrack>0.162</axletrack>
@@ -260,7 +260,7 @@
       <initial_speed>0.0</initial_speed>
       <robotNamespace>/</robotNamespace>
     </plugin>
-  </gazebo> -->
+  </gazebo>
 
   <!-- BNO055 IMU Plugin  -->
 

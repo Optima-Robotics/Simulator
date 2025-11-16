@@ -76,7 +76,7 @@ def generate_launch_description():
   # plugin_path = plugin_path + ":/opt/ros/humble/lib"
   # print(clean_path(plugin_path, default=1))
   os.environ["GAZEBO_MODEL_PATH"] = clean_path(model_path) 
-  # os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
+  os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
   # os.environ["GAZEBO_RESOURCE_PATH"] = media_path
 
   os.environ['GAZEBO_AUDIO_DEVICE'] = 'none'

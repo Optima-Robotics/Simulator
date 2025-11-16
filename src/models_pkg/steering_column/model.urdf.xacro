@@ -2,11 +2,11 @@
     <xacro:macro name="steering_column" params="prefix x y z z_joint">
         <link name="${prefix}_link">
             <inertial>
-                <mass value="0.001"/>
-                <inertia ixx="0.00014583" ixy="0.0" ixz="0.0" iyy="0.00014583" iyz="0.0" izz="0.000125"/>
+                <mass value="0.05"/>  
+                <inertia ixx="1e-5" ixy="0.0" ixz="0.0"  iyy="1e-5" iyz="0.0" izz="1e-5"/> 
             </inertial>
             <visual>
-                <origin rpy="0 0 1.5708" xyz="${x} ${y} ${z}"/>
+                <origin rpy="0 0 0" xyz="${x} ${y} ${z}"/>
                 <geometry>
                     <cylinder radius="0.001" length="0.01" />
                 </geometry>
@@ -47,7 +47,7 @@
                         <ode>
                         <soft_cfm>0</soft_cfm>
                         <soft_erp>0.2</soft_erp>
-                        <kp>1e+13</kp>
+                        <kp>1e+6</kp>
                         <kd>1</kd>
                         <max_vel>0.01</max_vel>
                         <min_depth>0</min_depth>
@@ -57,7 +57,7 @@
                         <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
                         <soft_cfm>0</soft_cfm>
                         <soft_erp>0.2</soft_erp>
-                        <kp>1e+13</kp>
+                        <kp>1e+6</kp>
                         <kd>1</kd>
                         </bullet>
                     </contact>
@@ -73,9 +73,12 @@
             <child link="${prefix}_link" />
             <origin xyz="0 0 ${z_joint}" rpy="0 -0 0" />
 
-            <axis xyz="0 1 0"/>
-            <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />
-            <dynamics damping="0" friction="0" />
+            <axis xyz="0 0 1"/>
+             <!-- reasonable limits: ±30° -->
+            <limit lower="-0.6" upper="0.6" effort="10" velocity="5"/>
+            
+            <!-- some damping -->
+            <dynamics damping="1.0" friction="0.1"/>
         </joint>
     </xacro:macro>
 </robot>
