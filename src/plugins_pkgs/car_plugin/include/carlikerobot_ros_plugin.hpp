@@ -6,6 +6,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include <std_msgs/msg/string.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 
 #include "carlikerobot.hpp"
 #include "rapidjson/document.h"
@@ -31,6 +32,8 @@ namespace gazebo
                 CMessageHandler(rclcpp::Node::SharedPtr, IRobotCommandSetter*);
                 ~CMessageHandler();
                 void OnMsgCommand(const std_msgs::msg::String::SharedPtr _msg);
+                void OnTwistCmd(const geometry_msgs::msg::Twist::SharedPtr msg);
+
 
             private:
                 void unknownMessage();
@@ -42,6 +45,7 @@ namespace gazebo
                 rclcpp::Node::SharedPtr _rosNode;
                 rclcpp::Subscription<std_msgs::msg::String>::SharedPtr _commandSubscriber;
                 rclcpp::Publisher<std_msgs::msg::String>::SharedPtr _feedbackPublisher;
+                rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr _twistSub;
 		
         };
         

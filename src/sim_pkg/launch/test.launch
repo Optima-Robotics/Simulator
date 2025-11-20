@@ -74,7 +74,7 @@ def generate_launch_description():
 
   model_path, plugin_path, media_path = GazeboRosPaths.get_paths()
   # plugin_path = plugin_path + ":/opt/ros/humble/lib"
-  # print(clean_path(plugin_path, default=1))
+  print(clean_path(plugin_path, default=1))
   os.environ["GAZEBO_MODEL_PATH"] = clean_path(model_path) 
   os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
   # os.environ["GAZEBO_RESOURCE_PATH"] = media_path

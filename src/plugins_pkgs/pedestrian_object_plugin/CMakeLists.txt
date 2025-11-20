@@ -19,4 +19,13 @@ add_library(pedestrian_object_plugin SHARED
 
 target_include_directories(pedestrian_object_plugin PUBLIC include)
 ament_target_dependencies(pedestrian_object_plugin gazebo_dev gazebo_ros rclcpp)
+
+install(
+  TARGETS pedestrian_object_plugin
+  LIBRARY DESTINATION share/pedestrian_object_plugin 
+)
+
+ament_export_libraries(pedestrian_object_plugin)
+ament_export_include_directories(include)
+
 ament_package()

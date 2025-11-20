@@ -14,5 +14,14 @@ add_library(gps_plugin SHARED src/gps_plugin.cpp include/gps_plugin.hpp)
 target_include_directories(gps_plugin PUBLIC include)
 
 ament_target_dependencies(gps_plugin "gazebo_dev" "gazebo_ros" "rclcpp" "utils")
+
+install(
+  TARGETS gps_plugin
+  LIBRARY DESTINATION share/gps_plugin 
+)
+
+ament_export_libraries(gps_plugin)
+ament_export_include_directories(include)
+
 ament_export_dependencies(gazebo_ros gazebo_ros utils)
 ament_package()

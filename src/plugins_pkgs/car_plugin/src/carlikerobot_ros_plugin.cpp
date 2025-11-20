@@ -25,6 +25,15 @@ namespace gazebo
             // Feedback message
 			this->_feedbackPublisher = this->_rosNode->create_publisher<std_msgs::msg::String>(listen_topicName, 2);
 		
+
+            this->_twistSub = this->_rosNode->create_subscription<geometry_msgs::msg::Twist>(
+                "/cmd_vel",                            // standard teleop topic
+                10,
+                std::bind(&CMessageHandler::OnTwistCmd, this, std::placeholders::_1)
+            );
+
+            RCLCPP_INFO_STREAM(logger, "Subscribed to /cmd_vel for teleop control");
+
             if (DEBUG)
             {
                 auto logger = this->_rosNode->get_logger();
@@ -39,6 +48,32 @@ namespace gazebo
 
         CMessageHandler::~CMessageHandler()
         {
+        }
+
+        void CMessageHandler::OnTwistCmd(const geometry_msgs::msg::Twist::SharedPtr msg)
+        {
+            float speed_ms = msg->linear.x;       // m/s from teleop
+            float steer_rad = msg->angular.z;     // rad from teleop
+
+            // ====== SPEED CONVERSION ======
+            float wheel_radius = 0.0325f;         // your wheel radius
+            float wheel_speed = speed_ms / wheel_radius;  // rad/s wheel speed
+
+            // ====== STEERING CONVERSION ======
+            float steer_deg = steer_rad * 180.0f / M_PI;  // rad → deg
+            float max_steer = 30.0f;               // typical limit
+            steer_deg = std::clamp(steer_deg, -max_steer, max_steer);
+
+            auto logger = this->_rosNode->get_logger();
+
+            if (DEBUG)
+            {
+                RCLCPP_INFO_STREAM(logger, "[TELEOP] speed=" << wheel_speed << " steer=" << steer_deg);
+            }
+
+            _robotSetter->f_speed = wheel_speed;
+            _robotSetter->f_steer = steer_deg;
+            _robotSetter->setCommand();
         }
 
         // Callback function for receiving messages on the /car_name/Command topic

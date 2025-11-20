@@ -264,14 +264,14 @@
 
   <!-- BNO055 IMU Plugin  -->
 
-  <!-- <gazebo>
+  <gazebo>
     <plugin name="bno055" filename="libbno055_plugin.so"/>
-  </gazebo> -->
+  </gazebo>
 
   <!-- GPS Plugin -->
 
-  <!-- <gazebo>
+  <gazebo>
     <plugin name="gps" filename="libgps_plugin.so"/>
-  </gazebo> -->
+  </gazebo>
 
 </robot>

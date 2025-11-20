@@ -13,5 +13,14 @@ include_directories(include ${GAZEBO_INCLUDE_DIRS})
 add_library(traffic_light_plugin SHARED src/traffic_light_plugin.cpp include/traffic_light_plugin.hpp)
 
 ament_target_dependencies(traffic_light_plugin "gazebo_dev" "gazebo_ros" "rclcpp" "std_msgs")
+
+install(
+  TARGETS traffic_light_plugin
+  LIBRARY DESTINATION share/traffic_light_plugin 
+)
+
+ament_export_libraries(traffic_light_plugin)
+ament_export_include_directories(include)
+
 ament_export_dependencies(rclcpp gazebo_ros)
 ament_package()

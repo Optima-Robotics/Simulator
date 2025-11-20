@@ -7,13 +7,25 @@ find_package(gazebo_msgs REQUIRED)
 find_package(gazebo_ros REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
 
 link_directories(${gazebo_dev_LIBRARY_DIRS} ${GAZEBO_LIBRARY_DIRS})
 include_directories(include ${Boost_INCLUDE_DIR} ${roscpp_INCLUDE_DIRS} ${std_msgs_INCLUDE_DIRS})
 
 add_library(car_plugin SHARED src/carlikerobot_ros_plugin.cpp src/carlikerobot.cpp)
 target_include_directories(car_plugin PUBLIC include)
-ament_target_dependencies(car_plugin "gazebo_dev" "gazebo_msgs" "gazebo_ros" "std_msgs" "rclcpp")
+ament_target_dependencies(car_plugin "gazebo_dev" "gazebo_msgs" "gazebo_ros" "std_msgs" "geometry_msgs" "rclcpp")
 
-ament_export_dependencies(rclcpp gazebo_ros std_msgs)
+
+install(
+  TARGETS car_plugin
+  LIBRARY DESTINATION share/car_plugin 
+)
+
+ament_export_libraries(car_plugin)
+ament_export_include_directories(include)
+ament_export_dependencies(rclcpp gazebo_ros std_msgs geometry_msgs)
+
+
 ament_package()
