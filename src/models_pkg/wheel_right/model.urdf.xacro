@@ -15,7 +15,7 @@
             <collision>
                 <origin xyz="0 0 0" rpy="1.5709 0 0" />
                 <geometry>
-                    <cylinder radius="0.033" length="0.028" />
+                    <cylinder radius="0.0325" length="0.028" />
                 </geometry>
                 <surface>
                     <friction>
@@ -47,8 +47,8 @@
                         <ode>
                         <soft_cfm>0</soft_cfm>
                         <soft_erp>0.2</soft_erp>
-                        <kp>1e+07</kp>
-                        <kd>1</kd>
+                        <kp>1e+05</kp>
+                        <kd>10</kd>
                         <max_vel>0.01</max_vel>
                         <min_depth>0</min_depth>
                         </ode>
@@ -75,8 +75,9 @@
             <origin xyz="${x} ${y} ${z}" rpy="0 -0 0" />
 
             <axis xyz="0 1 0"/>
-            <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" />
-            <dynamics damping="0" friction="0" />
+            <limit effort="10" velocity="100" />
+            <!-- <limit upper="1.79769e+308" lower="-1.79769e+308" effort="1" velocity="-1" /> -->
+            <dynamics damping="0.01" friction="0.01"/>
         </joint>
     </xacro:macro>
 </robot>

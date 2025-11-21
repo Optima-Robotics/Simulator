@@ -42,6 +42,21 @@ namespace gazebo{
             
             float  speed_rad_per_sec = speed_meter_per_sec / this->_wheelradius;
             
+            // DEADZONE FIX: stops wheels drifting at 0 cmd
+            if (fabs(speed_rad_per_sec) < 0.1)
+            {
+                this->_model->GetJointController()->SetVelocityTarget(this->_jointLeft->GetScopedName(), 0.0);
+                this->_model->GetJointController()->SetVelocityTarget(this->_jointRight->GetScopedName(), 0.0);
+
+                // Force = 0 is VERY important
+                this->_jointLeft->SetForce(0, 0);
+                this->_jointRight->SetForce(0, 0);
+
+                // Reset PID to avoid accumulated torque
+                this->_pidLeft.Reset();
+                this->_pidRight.Reset();
+                return;
+            }
             
             float l_K = tan(steeringAngle_deg / 180.0 * PI)/this->_wheelbase;
 
@@ -85,6 +100,20 @@ namespace gazebo{
         void CRearWheelsSpeed::update(float f_steerAngle_deg,float f_Vr_m_meterpsec)
         {
             float  l_Vr_m_radpsec = f_Vr_m_meterpsec/_wheelradius;
+
+            // DEADZONE FIX
+            if (fabs(l_Vr_m_radpsec) < 0.1)
+            {
+                this->_model->GetJointController()->SetVelocityTarget(this->_jointLeft->GetScopedName(), 0.0);
+                this->_model->GetJointController()->SetVelocityTarget(this->_jointRight->GetScopedName(), 0.0);
+
+                this->_jointLeft->SetForce(0, 0);
+                this->_jointRight->SetForce(0, 0);
+
+                this->_pidLeft.Reset();
+                this->_pidRight.Reset();
+                return;
+            }
 
             float l_K = tan(f_steerAngle_deg/180.0*PI)/this->_wheelbase;
             float l_Vr_R = l_Vr_m_radpsec*(2-_axletrack*l_K)/2;

@@ -54,3 +54,7 @@ To drive the car manually start teleop publisher:
 ```
 $ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
+
+Tested values that performed well are: 
+- linear speed - 0.008211
+- angular speed - 0.11
