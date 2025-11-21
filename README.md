@@ -36,14 +36,21 @@ Dependencies:
 - `direnv`
 - `just`
 
-`direnv` is useful for automating the environment setup with `.envrc` instead of sourcing manually.
-The poetry venv is also set up in `.envrc`. The first time `.envrc` is sourced, the file
-`./install/local_setup.bash` doesn't exist so it will throw a warning. After running
-`colcon build`, this should be fine. The `.envrc` has only been tested on arch linux.
-Modify it according to your system, if necessary.
+Enter the folder where /src is located.
+A temproray launch file for testing is provided, will be renamed after.
+
 ```
-$ poetry install
-$ colcon build
+$ colcoon build
+$ source ~/.bashrc
+$ source install/setup.bash
+$ ros2 launch sim_pkg test.launch 
 ```
 
-Then exit and enter the directory to source the new environment.
+Rviz2 and Gazebo windows should open, the first showing the car model, and the second the simulation.
+
+To access the camera use the /camera1 topics, and to control the car use the /cmd_vel topic.
+To drive the car manually start teleop publisher:
+
+```
+$ ros2 run teleop_twist_keyboard teleop_twist_keyboard
+```
