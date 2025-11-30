@@ -48,7 +48,7 @@ def generate_launch_description():
   urdf_file_path = 'rcCar_assembly/model.urdf.xacro'
   sdf_file_path = 'rcCar_assembly/model.sdf'
 
-  world_file_path = 'worlds/world_with_separators.world'
+  world_file_path = 'worlds/world.world'
      
   # Pose where we want to spawn the robot
   spawn_x_val = '0.82'

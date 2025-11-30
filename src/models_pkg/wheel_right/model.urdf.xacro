@@ -2,7 +2,7 @@
     <xacro:macro name="wheel_right" params="prefix x y z parent">
         <link name="${prefix}_link">
             <inertial>
-                <mass value="0.038"/>
+                <mass value="0.1"/>
                 <inertia ixx="0.00003" ixy="0.0" ixz="0.0" iyy="0.00003" iyz="0.0"  izz="0.00003"/>            
             </inertial>
             <visual>
@@ -22,18 +22,19 @@
                         <ode>
                         <mu>0.7</mu>
                         <mu2>0.7</mu2>
-                        <fdir1>0 0 0</fdir1>
+                        <fdir1>0 0 0</fdir1> 
+                        <!-- 0 0 0 -->
                         <slip1>0</slip1>
                         <slip2>0</slip2>
                         </ode>
                         <!-- <torsional>
-                        <coefficient>1</coefficient>
-                        <patch_radius>0</patch_radius>
-                        <surface_radius>0</surface_radius>
-                        <use_patch_radius>1</use_patch_radius>
-                        <ode>
-                            <slip>0</slip>
-                        </ode>
+                            <coefficient>1</coefficient>
+                            <patch_radius>0</patch_radius>
+                            <surface_radius>0</surface_radius>
+                            <use_patch_radius>1</use_patch_radius>
+                            <ode>
+                                <slip>0</slip>
+                            </ode>
                         </torsional> -->
                     </friction>
                     <bounce>
