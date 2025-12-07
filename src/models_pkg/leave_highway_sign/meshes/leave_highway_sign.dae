@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="highway_off_png" name="highway_off_png">
-      <init_from>highway_off.png</init_from>
+      <init_from>leave_highway_sign.png</init_from>
     </image>
   </library_images>
   <library_materials>

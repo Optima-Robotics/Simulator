@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="crosswalk_png" name="crosswalk_png">
-      <init_from>crosswalk.png</init_from>
+      <init_from>pedestrian_sign.png</init_from>
     </image>
   </library_images>
   <library_materials>

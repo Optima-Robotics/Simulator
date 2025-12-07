@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="interzis_texture_png" name="interzis_texture_png">
-      <init_from>interzis_texture.png</init_from>
+      <init_from>notallowed_sign.png</init_from>
     </image>
   </library_images>
   <library_materials>

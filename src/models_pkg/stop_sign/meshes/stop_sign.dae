@@ -41,7 +41,7 @@
   </library_effects>
   <library_images>
     <image id="StopSign_png" name="StopSign_png">
-      <init_from>StopSign.png</init_from>
+      <init_from>stop_sign.png</init_from>
     </image>
   </library_images>
   <library_materials>

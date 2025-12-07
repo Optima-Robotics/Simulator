@@ -10,6 +10,8 @@ from launch_ros.descriptions import ParameterValue
 from ament_index_python.packages import get_package_share_directory
 from scripts import GazeboRosPaths 
 from pathlib import Path
+from launch.actions import TimerAction
+
 
 def clean_path(raw, default=0):
   cleaned_paths = []
@@ -48,7 +50,7 @@ def generate_launch_description():
   urdf_file_path = 'rcCar_assembly/model.urdf.xacro'
   sdf_file_path = 'rcCar_assembly/model.sdf'
 
-  world_file_path = 'worlds/world.world'
+  world_file_path = 'worlds/world_with_separators.world'
      
   # Pose where we want to spawn the robot
   spawn_x_val = '0.82'
@@ -74,7 +76,7 @@ def generate_launch_description():
 
   model_path, plugin_path, media_path = GazeboRosPaths.get_paths()
   # plugin_path = plugin_path + ":/opt/ros/humble/lib"
-  print(clean_path(plugin_path, default=1))
+  # print(clean_path(plugin_path, default=1))
   os.environ["GAZEBO_MODEL_PATH"] = clean_path(model_path) 
   os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
   # os.environ["GAZEBO_RESOURCE_PATH"] = media_path
@@ -92,6 +94,7 @@ def generate_launch_description():
   use_rviz = LaunchConfiguration('use_rviz')
   use_sim_time = LaunchConfiguration('use_sim_time')
   use_simulator = LaunchConfiguration('use_simulator')
+  use_signs = LaunchConfiguration('use_signs')
   world = LaunchConfiguration('world')
    
   # Declare the launch arguments  
@@ -144,6 +147,11 @@ def generate_launch_description():
     name='use_simulator',
     default_value='True',
     description='Whether to start the simulator')
+
+  declare_use_signs_cmd = DeclareLaunchArgument(
+    name='use_signs',
+    default_value='True',
+    description='Whether to spawn sign models')
  
   declare_world_cmd = DeclareLaunchArgument(
     name='world',
@@ -170,8 +178,8 @@ def generate_launch_description():
     executable='rviz2',
     name='rviz2',
     output='screen',
-    arguments=['-d', rviz_config_file])
- 
+    arguments=['-d', rviz_config_file]
+  )
   # Start Gazebo server
   start_gazebo_server_cmd = IncludeLaunchDescription(
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')),
@@ -189,6 +197,11 @@ def generate_launch_description():
     PythonLaunchDescriptionSource(os.path.join(pkg_gazebo_ros, 'launch', 'gzclient.launch.py')),
     condition=IfCondition(PythonExpression([use_simulator, ' and not ', headless])),
     launch_arguments={'verbose': 'true'}.items(),)
+  
+  # Model launch file
+  model_spawn_cmd = IncludeLaunchDescription(
+    PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'model_spawn.launch.py')),
+    condition=IfCondition(use_signs))
  
   # Launch the robot which will publlish joint states
   spawn_entity_cmd = Node(
@@ -201,18 +214,9 @@ def generate_launch_description():
                     '-z', spawn_z_val,
                     '-Y', spawn_yaw_val],
                     output='screen')
-
-  # Launch the robot with plugins
-  spawn_entity_sdf_cmd = Node(
-    package='gazebo_ros', 
-    executable='spawn_entity.py',
-    arguments=['-entity', robot_name_in_model, 
-                '-file', default_sdf_model_path,
-                    '-x', spawn_x_val,
-                    '-y', spawn_y_val,
-                    '-z', spawn_z_val,
-                    '-Y', spawn_yaw_val],
-                    output='screen')
+  
+  action = TimerAction(period=20.0,
+                      actions=[model_spawn_cmd])
  
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -228,6 +232,7 @@ def generate_launch_description():
   ld.add_action(declare_use_rviz_cmd) 
   ld.add_action(declare_use_sim_time_cmd)
   ld.add_action(declare_use_simulator_cmd)
+  ld.add_action(declare_use_signs_cmd)
   ld.add_action(declare_world_cmd)
  
   # Add any actions
@@ -237,8 +242,11 @@ def generate_launch_description():
 
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
+
+  ld.add_action(action)
+
   ld.add_action(spawn_entity_cmd)
-  # ld.add_action(spawn_entity_sdf_cmd)
   ld.add_action(start_rviz_cmd)
+
  
   return ld
