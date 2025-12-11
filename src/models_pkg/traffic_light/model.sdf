@@ -318,7 +318,11 @@
     <static>1</static>
     <allow_auto_disable>1</allow_auto_disable>
 
-    <plugin name="traffic_light_plugin" filename="libtraffic_light_plugin.so"></plugin>
+    <plugin name="traffic_light_plugin" filename="libtraffic_light_plugin.so">
+      <ros>
+        <namespace>$(arg robot_namespace)</namespace>
+      </ros>
+    </plugin>
 
   </model>
 </sdf>

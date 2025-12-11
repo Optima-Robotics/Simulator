@@ -50,7 +50,7 @@ def generate_launch_description():
   urdf_file_path = 'rcCar_assembly/model.urdf.xacro'
   sdf_file_path = 'rcCar_assembly/model.sdf'
 
-  world_file_path = 'worlds/world_with_separators.world'
+  world_file_path = 'worlds/world_with_signs.world'
      
   # Pose where we want to spawn the robot
   spawn_x_val = '0.82'
@@ -76,7 +76,7 @@ def generate_launch_description():
 
   model_path, plugin_path, media_path = GazeboRosPaths.get_paths()
   # plugin_path = plugin_path + ":/opt/ros/humble/lib"
-  # print(clean_path(plugin_path, default=1))
+  print(clean_path(plugin_path, default=1))
   os.environ["GAZEBO_MODEL_PATH"] = clean_path(model_path) 
   os.environ["GAZEBO_PLUGIN_PATH"] = clean_path(plugin_path, default=1)
   # os.environ["GAZEBO_RESOURCE_PATH"] = media_path
@@ -215,8 +215,16 @@ def generate_launch_description():
                     '-Y', spawn_yaw_val],
                     output='screen')
   
-  action = TimerAction(period=20.0,
-                      actions=[model_spawn_cmd])
+
+  traffic_light_talker_cmd = Node(
+      package='traffic_light_pkg',
+      executable='tl_talker',
+      name='tltalker'
+  )
+
+  action = TimerAction(period=10.0,
+                      actions=[model_spawn_cmd]) #, traffic_light_talker_cmd])
+  
  
   # Create the launch description and populate
   ld = LaunchDescription()
@@ -243,9 +251,12 @@ def generate_launch_description():
   ld.add_action(start_gazebo_server_cmd)
   ld.add_action(start_gazebo_client_cmd)
 
-  ld.add_action(action)
-
   ld.add_action(spawn_entity_cmd)
+
+  # ld.add_action(action)
+
+
+  
   ld.add_action(start_rviz_cmd)
 
  

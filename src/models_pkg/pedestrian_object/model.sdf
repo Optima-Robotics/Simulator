@@ -107,7 +107,11 @@
 
 
     <plugin name="pedestrian_object_plugin" filename="libpedestrian_object_plugin.so">
-    <rc_car_name>automobile</rc_car_name>
+      <rc_car_name>automobile</rc_car_name>
+
+      <ros>
+        <namespace>$(arg robot_namespace)</namespace>
+      </ros>
     </plugin>
 
   </model>

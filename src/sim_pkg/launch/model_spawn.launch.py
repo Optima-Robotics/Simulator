@@ -166,37 +166,41 @@ def generate_launch_description():
                           '-z', str(z),
                           '-Y', str(Y)],
                           output='screen')
-      action = TimerAction(period=2.0,
+      action = TimerAction(period=5.0,
                       actions=[node])
       
-      ld.add_action(action)
+      ld.add_action(node)
 
   for name, pedestrian_entity in pedestrian_entities.items():
     path = pedestrian_entity['path']
 
     for i, coordinate_tuple in enumerate(pedestrian_entity['coordinates']):
       x, y, z, Y = coordinate_tuple
+      sdf_args_string = f"robot_namespace:=/{name + str(i)}"
       node = Node(
           package='gazebo_ros', 
           executable='spawn_entity.py',
           arguments=['-entity', name + str(i), 
                       '-file', path,
-                          '-x', str(x),
-                          '-y', str(y),
-                          '-z', str(z),
-                          '-Y', str(Y)],
-                          output='screen')
+                        '-x', str(x),
+                        '-y', str(y),
+                        '-z', str(z),
+                        '-Y', str(Y),
+                        '--ros-args', '--remap', sdf_args_string],
+                        output='screen')
       
-      action = TimerAction(period=2.0,
+      action = TimerAction(period=5.0,
                       actions=[node])
       
       ld.add_action(action)
 
   for name, traffic_entity in traffic_light_entities.items():
-    path = pedestrian_entity['path']
+    path = traffic_entity['path']
 
     for name, coordinate_tuple in zip(traffic_entity['names'], traffic_entity['coordinates']):
       x, y, z, Y = coordinate_tuple
+      sdf_args_string = f"robot_namespace:=/{name}"
+
       node = Node(
           package='gazebo_ros', 
           executable='spawn_entity.py',
@@ -205,9 +209,11 @@ def generate_launch_description():
                           '-x', str(x),
                           '-y', str(y),
                           '-z', str(z),
-                          '-Y', str(Y)],
+                          '-Y', str(Y),
+                        '--ros-args', '--remap', sdf_args_string],
                           output='screen')
-      action = TimerAction(period=2.0,
+      
+      action = TimerAction(period=5.0,
                       actions=[node])
       
       ld.add_action(action)
