@@ -56,22 +56,22 @@ namespace gazebo
             float steer_rad = msg->angular.z;     // rad from teleop
 
             // ====== SPEED CONVERSION ======
-            float wheel_radius = 0.0325f;         // your wheel radius
-            float wheel_speed = speed_ms / wheel_radius;  // rad/s wheel speed
+            // float wheel_radius = 0.0325f;         // your wheel radius
+            // float wheel_speed = speed_ms / wheel_radius;  // rad/s wheel speed
 
             // ====== STEERING CONVERSION ======
             float steer_deg = steer_rad * 180.0f / M_PI;  // rad → deg
-            float max_steer = 30.0f;               // typical limit
+            float max_steer = 25.0f;               // typical limit
             steer_deg = std::clamp(steer_deg, -max_steer, max_steer);
 
             auto logger = this->_rosNode->get_logger();
 
             if (DEBUG)
             {
-                RCLCPP_INFO_STREAM(logger, "[TELEOP] speed=" << wheel_speed << " steer=" << steer_deg);
+                RCLCPP_INFO_STREAM(logger, "[TELEOP] speed=" << speed_ms << " steer=" << steer_deg);
             }
 
-            _robotSetter->f_speed = wheel_speed;
+            _robotSetter->f_speed = speed_ms;
             _robotSetter->f_steer = steer_deg;
             _robotSetter->setCommand();
         }
