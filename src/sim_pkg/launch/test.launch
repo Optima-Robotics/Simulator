@@ -50,13 +50,13 @@ def generate_launch_description():
   urdf_file_path = 'rcCar_assembly/model.urdf.xacro'
   sdf_file_path = 'rcCar_assembly/model.sdf'
 
-  world_file_path = 'worlds/2024map.world'
+  world_file_path = 'worlds/world.world'#'worlds/2024map.world'
      
   # Pose where we want to spawn the robot
-  spawn_x_val = '0.82'
-  spawn_y_val = '-14.91'
-  spawn_z_val = '0.032939'
-  spawn_yaw_val = '1.570796'
+  spawn_x_val = '0.939675' #'11.24' #'0.82'
+  spawn_y_val = '-2.063399' #'-10.47' #'-14.91'
+  spawn_z_val = '0.046042' #'0.032939'
+  spawn_yaw_val = '3.1415' #'1.570796'
    
   # Set the path to different files and folders.  
   pkg_gazebo_ros = FindPackageShare(package='gazebo_ros').find('gazebo_ros')   

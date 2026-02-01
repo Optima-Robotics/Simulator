@@ -60,7 +60,17 @@ namespace gazebo
             // float wheel_speed = speed_ms / wheel_radius;  // rad/s wheel speed
 
             // ====== STEERING CONVERSION ======
-            float steer_deg = steer_rad * 180.0f / M_PI;  // rad → deg
+            float steer_deg = 0.0;
+            if (std::abs(speed_ms) > 0.001f){
+                steer_deg = atan2(steer_rad * 0.270, speed_ms);
+            }
+            
+            if (steer_deg >= M_PI){
+                steer_deg -= M_PI;
+            }
+                
+            steer_deg *= 180.0f/M_PI * 10;
+
             float max_steer = 25.0f;               // typical limit
             steer_deg = std::clamp(steer_deg, -max_steer, max_steer);
 
